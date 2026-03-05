@@ -147,7 +147,7 @@ class Email2UsernameTikTok:
         'x-argus': m['x-argus'],
         'x-gorgon': m['x-gorgon'],
         'content-type': "application/x-www-form-urlencoded",
-        'content-length': m['content-length'],
+        'content-length': '0',
 
         }
 
