@@ -207,7 +207,7 @@ class EmailToUsernameTikTok:
             except Exception as e:
                 continue 
       return None
-   async def __send_code(self) -> str | function :
+   async def __send_code(self) -> str | None:
       try:
           tmMail = await self.__get_email() 
       except:
@@ -240,7 +240,7 @@ class EmailToUsernameTikTok:
            return username
        except Exception as e:
            return str(e)
-   async def run(self) -> dict[str:str,str:str] | function :
+   async def run(self) -> dict[str:str,str:str] :
     try:
         username = await self.__send_code()
         if username == "Email Not found in TikTok":
@@ -249,5 +249,7 @@ class EmailToUsernameTikTok:
     except Exception as e:
         await self.__send_code()
 if __name__ == "__main__":
-    print(asyncio.run(EmailToUsernameTikTok(input("Enter Email :")).run()))
+    email = input("Enter Email : ")
+    print("Please wait, this may take a few seconds...")
+    print(asyncio.run(EmailToUsernameTikTok(email).run()))
 #by -> https://t.me/saftey_1
