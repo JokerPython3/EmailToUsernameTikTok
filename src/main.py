@@ -31,6 +31,13 @@ class EmailToUsernameTikTok:
       self.xor_email = self.xor(self.email)
       self.params = self.__get_param()
       self.cookies =  {"passport_csrf_token": self.secret,"passport_csrf_token_default": self.secret,"install_id": self.params["iid"],}
+   def __get_domins(self) -> str:
+       try:
+           r = requests.get("https://api.mail.tm/domains").json()
+           return r["hydra:member"][0]["domain"]
+       except IndexError:
+           return None
+
    def client_builder(self) -> httpx.AsyncClient:
        if HTTPX_PROXIES:
            return httpx.AsyncClient(http2=True,follow_redirects=True,proxy=HTTPX_PROXIES)
@@ -117,7 +124,7 @@ class EmailToUsernameTikTok:
         return response.json()["token"]
     except:
         return None
-   async def __get_email(self) -> dict[str:str,str:str]:
+   async def __get_email(self,domin:str) -> dict[str:str,str:str]:
     headers = {
         'User-Agent':str(generate_user_agent()),
         'Accept': 'application/json',
@@ -132,7 +139,7 @@ class EmailToUsernameTikTok:
         'Priority': 'u=0',
     }
     json_data = {
-        'address': "".join(random.choices(string.ascii_lowercase + string.digits, k=12)) + '@emalupe.com',
+        'address': "".join(random.choices(string.ascii_lowercase + string.digits, k=12)) + '@'+domin,
         'password': 'NtroAtro',
     }
     response = requests.post('https://api.mail.tm/accounts', headers=headers, json=json_data, proxies=GLOBAL_PROXIES)
@@ -209,7 +216,10 @@ class EmailToUsernameTikTok:
       return None
    async def __send_code(self) -> str | None:
       try:
-          tmMail = await self.__get_email() 
+          domin = self.__get_domins()
+        #   print(domin)
+          tmMail = await self.__get_email(domin=domin) 
+        #   print(tmMail)
       except:
           return await self.__get_email()
       email = tmMail["email"]

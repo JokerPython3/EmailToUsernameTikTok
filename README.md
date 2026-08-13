@@ -18,6 +18,7 @@ python src/main.py
 # if you want read source code read the past commit
 # idea of traifc :
 # تروح لي استعادة حساب وتنطي ايميل اي حساب وتسحب تصال لوكاب مالت ايميل هذا تصال لوكاب ينطيك باسبورت تيوكت وتحتاج ايميل وهمي او حقيقي بس يكون مامسوي بيه حساب تيك وتروح تسحب اتصال send_code وبي بارامس مالته تحط ايميل ألي مامسوي حساب تيك بيه وتحط باسبورت تيكت مالت تصال لوكاب وشركة شتسوي تكوم ترسل رساله على ايميل الي مامسجل بيه وبل رساله بيها يوزر حساب وبس
+# not_login_ticket تاخذه من اتصال avaliber awyes تسحبه من نسخه تيك لايت تروح للاستعاده وتحط يوزر يطلعلك اتصال avaliber awayes هذا مالت كشف ربوطات بي params مالته تلكاه not_login_ticket قبل جنه نجيبه من تيك استوديو هسه من لايت لن استعاده استوديو توقفت ايام التشكير
 # if block using vpn example porton vpn
 # explaing in youtub
 # link = https://youtu.be/oMWSW368RbE?si=aJBBT_cY7CYc6EFe
