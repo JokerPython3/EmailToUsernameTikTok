@@ -23,3 +23,5 @@ python src/main.py
 # explaing in youtub
 # link = https://youtu.be/oMWSW368RbE?si=aJBBT_cY7CYc6EFe
 # by => s1
+# قبل فتره توقفت وحدثتها توقفت بسبب انو تيك كام يريد دفايزات حقيقيه حطيتله تصال device_register ورجع يشتقل
+# اذا صار بيه اي عطل يتحدث تلقاىيا
