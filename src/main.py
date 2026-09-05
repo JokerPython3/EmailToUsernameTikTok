@@ -4,16 +4,18 @@ from hashlib import md5
 import json
 import os
 import random
+import secrets
 import string
 import time
+from urllib.parse import urlencode
 import uuid
 
 import httpx
 from user_agent import generate_user_agent
-import SignerPy
 
+from hsopyt import Gorgon,Ladon,Argus,md5
 
-class EmailToUsernameTikTok:
+class EmailToUsernameTikTok():
     def __init__(self, email: str, proxy: dict[str, str] | str | None = None) -> None:
         self.__httpx_proxy = proxy
         self.__email = email
@@ -22,7 +24,23 @@ class EmailToUsernameTikTok:
         self.__unix = str(round(int(time.time())))
         self.__device = None
         self.__param = None
+    @staticmethod
+    def __sign(params: str, payload: str or None = None, sec_device_id: str = "AadCFwpTyztA5j9L" + ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(9)) , cookie: str or None = None, aid: int = 1233, license_id: int = 1611921764, sdk_version_str: str = 'v05.00.06-ov-android', sdk_version: int = 167775296, platform: int = 0, unix: float = None):
+        x_ss_stub = md5(payload.encode('utf-8')).hexdigest() if payload != None else None
+        if not unix: unix = time.time()
 
+        return Gorgon(params, unix, payload, cookie).get_value() | {
+            'content-length' : str(len(payload)),
+            'x-ss-stub'      : x_ss_stub.upper(),
+            'x-ladon'        : Ladon.encrypt(int(unix), license_id, aid),
+            'x-argus'        : Argus.get_sign(params, x_ss_stub, int(unix),
+                platform        = platform,
+                aid             = aid,
+                license_id      = license_id,
+                sec_device_id   = sec_device_id,
+                sdk_version     = sdk_version_str, 
+                sdk_version_int = sdk_version
+            )}
     async def __aenter__(self):
         return self
 
@@ -176,6 +194,7 @@ class EmailToUsernameTikTok:
                     "cdid": json_data["header"]["cdid"],
                     "openudid": str(params).split("&openudid=")[1].split("&")[0],
                     "req_id": params.split("req_id=")[1].split("device_platform")[0],
+                    "user_agent": headers.get("User-Agent")
                 }
         except Exception:
             return await self.__get_device()
@@ -204,6 +223,7 @@ class EmailToUsernameTikTok:
             "aid": "1233",
             "app_name": "musical_ly",
             "version_code": "410103",
+            'app_version':'41.1.3',
             "type": "3736",
             "version_name": "41.1.3",
             "manifest_version_code": "2024101030",
@@ -232,8 +252,8 @@ class EmailToUsernameTikTok:
             "build_number": "41.1.3",
             "region": "US",
             "ts": str(round(int(time.time()))),
-            "iid": self.__device["iid"],
-            "device_id": self.__device["did"],
+            "iid": "7681732380773041927", # dont tachhhh لاتلعب بل iid و device_id لف رحمه على ديس رضعتو
+            "device_id": "7681728114456315410", # dont tachhhhhhhhh
             "openudid": self.__device["openudid"],
             "support_webview": "1",
             "okhttp_version": "4.2.228.22-tiktok",
@@ -330,7 +350,7 @@ class EmailToUsernameTikTok:
             + "; Build/TQ3A.230901.001;tt-ok/3.12.13.21)",
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        header.update(SignerPy.sign(params=params, aid=1233, version=8404, data=data))
+        header.update(self.__sign(params=urlencode(params),aid=1233,payload=""))
         return header
 
     async def __ticket_request(self) -> httpx.Response | None:
@@ -365,10 +385,12 @@ class EmailToUsernameTikTok:
                     headers=self.__get_header(params=self.__param, host=host, data=""),
                     params=self.__param,
                 )
+                print(response.text)
                 if response.json().get("data") is None:
                     return None
                 return response
-            except Exception:
+            except Exception as e:
+                print(e)
                 continue
         return None
 
@@ -400,6 +422,7 @@ class EmailToUsernameTikTok:
             headers=self.__get_header(params=self.__param, host=host, data=""),
             params=self.__param,
         )
+        print(response.text)
 
         if "email_ticket" in response.text:
             await asyncio.sleep(5)
@@ -433,3 +456,20 @@ if __name__ == "__main__":
     email = input("Enter Email -> ")
     print("Please wait, this may take a few seconds...")
     print(asyncio.run(EmailToUsernameTikTok(email, proxy=proxy if proxy else None).run()))
+#linux x86_64 arch
+#section .data
+    #text db "hello, world",10
+#section .text
+    #global _start
+#_start:
+    # mov rax,1
+    # mov rdi,1
+    # mov rsi,text
+    # mov rdx,13
+    # syscall
+    # mov rax,60
+    # mov rdi,0
+    # syscall
+# nasm -f elf64 -o main.asm main.o
+# ld -o main main.o
+# ./main
